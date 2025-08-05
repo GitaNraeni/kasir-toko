@@ -23,7 +23,7 @@ class ProfileController extends Controller
         $request->validate([
             'name' => ['required', 'max:100'],
             'username' => ['required', 'unique:users,username,' . $request->user()->id],
-            'password_baru' => ['nullable', 'max:100', 'confirmed']
+            'password_baru' => ['required', 'nullable', 'max:100', 'confirmed']
         ]);
 
         if ($request->password_baru) {

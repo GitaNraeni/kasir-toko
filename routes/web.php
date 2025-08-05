@@ -9,6 +9,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\StokController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\TransaksiController;
 
 
 Route::get('/', function () {
@@ -26,4 +28,16 @@ Route::middleware('auth')->group(function(){
     Route::resource('produk', ProdukController::class);
     Route::get('stok/produk',[StokController::class,'produk'])->name('stok.produk');
     Route::resource('stok',StokController::class)->only('index','create','store','destroy');
+    Route::get('transaksi/produk', [TransaksiController::class, 'produk'])
+        ->name('transaksi.produk');
+    Route::get('transaksi/pelanggan', [TransaksiController::class, 'pelanggan'])
+        ->name('transaksi.pelanggan');
+    Route::get('transaksi/{transaksi}/cetak', [TransaksiController::class, 'cetak'])
+        ->name('transaksi.cetak');
+    Route::post('transaksi/pelanggan', [TransaksiController::class, 'addPelanggan'])
+        ->name('transaksi.pelanggan.add');
+    Route::resource('transaksi', TransaksiController::class)->except('edit', 'update');
+    Route::get('cart/clear', [CartController::class, 'clear'])->name('cart.clear');
+    Route::resource('cart', CartController::class)->except('create', 'show', 'edit')
+        ->parameters(['cart' => 'hash']);
 });

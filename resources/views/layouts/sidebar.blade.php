@@ -8,6 +8,9 @@
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 <x-nav-item title="Home" icon="fas fa-home" :routes="['home']" />
 
+                <x-nav-item title="Transaksi" icon="fas fa-cash-register"
+                :routes="['transaksi.index', 'transaksi.create', 'transaksi.show']" />
+
                 <x-nav-item title="Produk" icon="fas fa-box-open"
                 :routes="['produk.index', 'produk.create', 'produk.edit']" />
 
