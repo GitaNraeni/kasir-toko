@@ -50,7 +50,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($users as $key => $user)
+                @forelse ($users as $key => $user)
                 <tr>
                     <td>{{ $users->firstItem() + $key }}</td>
                     <td>{{ $user->name }}</td>
@@ -65,7 +65,11 @@
                         </button>
                     </td>
                 </tr>
-                @endforeach
+                @empty
+                        <tr>
+                            <td colspan="4" class="text-center text-muted">Belum ada user.</td>
+                        </tr>
+                @endforelse
             </tbody>
         </table>
     </div>

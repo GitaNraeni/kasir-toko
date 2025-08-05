@@ -50,7 +50,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($produks as $key => $produk)
+                    @forelse ($produks as $key => $produk)
                     <tr>
                         <td>{{ $produks->firstItem() + $key }}</td>
                         <td>{{ $produk->kode_produk }}</td>
@@ -75,7 +75,11 @@
                             </button>
                         </td>
                     </tr>
-                    @endforeach
+                    @empty
+                        <tr>
+                            <td colspan="7" class="text-center text-muted">Belum ada produk.</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>

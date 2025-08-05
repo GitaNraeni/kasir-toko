@@ -47,7 +47,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($stoks as $key => $stok)
+                    @forelse ($stoks as $key => $stok)
                     <tr>
                         <td>{{ $stoks->firstItem() + $key }}</td>
                         <td>{{ $stok->nama_produk }}</td>
@@ -64,7 +64,11 @@
                             </button>
                         </td>
                     </tr>
-                    @endforeach
+                    @empty
+                        <tr>
+                            <td colspan="6" class="text-center text-muted">Belum ada stok.</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>

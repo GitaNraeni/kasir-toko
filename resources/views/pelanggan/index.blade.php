@@ -46,7 +46,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($pelanggans as $key => $pelanggan)
+                    @forelse ($pelanggans as $key => $pelanggan)
                     <tr>
                         <td>{{ $pelanggans->firstItem() + $key }}</td>
                         <td>{{ $pelanggan->name }}</td>
@@ -69,7 +69,11 @@
                             </button>
                         </td>
                     </tr>
-                    @endforeach
+                    @empty
+                        <tr>
+                            <td colspan="5" class="text-center text-muted">Belum ada pelanggan.</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>

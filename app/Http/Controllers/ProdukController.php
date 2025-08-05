@@ -18,7 +18,7 @@ class ProdukController extends Controller
         ->select('produks.*', 'nama_kategori')
         ->when($search, function ($q, $search) {
             return $q->where('kode_produk', 'like', "%{$search}%")
-            -orWhere('nama_produk', 'like', "%{$search}%");
+            ->orWhere('nama_produk', 'like', "%{$search}%");
         })
         ->paginate();
 

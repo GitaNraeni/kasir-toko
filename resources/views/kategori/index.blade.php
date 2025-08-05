@@ -48,7 +48,7 @@
                 </thead>
 
                 <tbody>
-                    @foreach ($kategoris as $key => $kategori)
+                    @forelse ($kategoris as $key => $kategori)
                     <tr>
                         <td>{{ $kategoris->firstItem() + $key }}</td>
                         <td>{{ $kategori->nama_kategori }}</td>
@@ -68,7 +68,11 @@
                                 <i class="fas fa-trash"></i>
                         </td>
                     </tr>
-                    @endforeach
+                    @empty
+                        <tr>
+                            <td colspan="3" class="text-center text-muted">Belum ada kategori.</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
