@@ -11,11 +11,13 @@ use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\StokController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\TransaksiController;
+use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\DashboardController;
 
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('home')->middleware('auth');
+Route::get('/', [DashboardController::class, 'index'])
+    ->name('home')
+    ->middleware('auth');
 
 Route::view('login','auth.login')->name('login')->middleware('guest');
 Route::post('login',[AuthController::class, 'login'])->middleware('guest');
@@ -40,4 +42,7 @@ Route::middleware('auth')->group(function(){
     Route::get('cart/clear', [CartController::class, 'clear'])->name('cart.clear');
     Route::resource('cart', CartController::class)->except('create', 'show', 'edit')
         ->parameters(['cart' => 'hash']);
+    Route::get('laporan', [LaporanController::class, 'index'])->name('laporan.index');
+    Route::get('laporan/harian', [LaporanController::class, 'harian'])->name('laporan.harian');
+    Route::get('laporan/bulanan', [LaporanController::class, 'bulanan'])->name('laporan.bulanan');
 });
