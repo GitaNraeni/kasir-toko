@@ -53,6 +53,14 @@ class ProdukController extends Controller
             'nama_produk' => ['required', 'max:150'],
             'harga' => ['required', 'numeric'],
             'kategori_id' => ['required', 'exists:kategoris,id'],
+            'diskon'=>['required','between:0,100'],
+        ]);
+
+        $harga = $request->harga - ($request->harga * $request->diskon / 100);
+
+        $request->merge([
+            'harga_produk'=>$request->harga,
+            'harga'=>$harga,
         ]);
 
         Produk::create($request->all());
@@ -89,7 +97,15 @@ class ProdukController extends Controller
             'kode_produk' => ['required', 'max:250', 'unique:produks,kode_produk,' .$produk->id],
             'nama_produk' => ['required', 'max:150'],
             'harga' => ['required', 'numeric'],
+            'diskon'=>['required','between:0,100'],
             'kategori_id' => ['required', 'exists:kategoris,id'],
+        ]);
+
+        $harga = $request->harga - ($request->harga * $request->diskon / 100);
+
+        $request->merge([
+            'harga_produk'=>$request->harga,
+            'harga'=>$harga,
         ]);
 
         $produk->update($request->all());

@@ -105,100 +105,87 @@
     });
 
     function fetchCart() {
-    $.getJSON("/cart", function(response) {
-        $('#resultCart').empty();
+        $.getJSON("/cart", function(response) {
+            $('#resultCart').empty();
 
-        const {
-            items,
-            subtotal,
-            tax_amount,
-            total,
-            extra_info
-        } = response;
+            const { items, subtotal, tax_amount, total, extra_info } = response;
 
-        // Tampilkan total
-        $('#subtotal').html(rupiah(subtotal));
-        $('#taxAmount').html(rupiah(tax_amount));
-        $('#total, #totalJumlah').html(rupiah(total));
-        $('#totalBayar').val(total);
+            // Tampilkan total
+            $('#subtotal').html(rupiah(subtotal));
+            $('#taxAmount').html(rupiah(tax_amount));
+            $('#total, #totalJumlah').html(rupiah(total));
+            $('#totalBayar').val(total);
 
-        for (const property in items) {
-            addRow(items[property])
-        }
+            // Cek kalau ada item
+            if (items && Object.keys(items).length > 0) {
+                for (const property in items) {
+                    addRow(items[property]);
+                }
+            } else {
+                $('#resultCart').html(`<tr><td colspan="5" class="text-center">Tidak ada data.</td></tr>`);
+            }
 
-        if (Array.isArray(items)) {
-            $('#resultCart').html(` <tr><td colspan="5" class="text-center">Tidak ada data.</td></tr>`);
-        }
-
-        if (!Array.isArray(extra_info)) {
-            const { id, name } = extra_info.pelanggan
-            $('#namaPelanggan').val(name);
-            $('#pelangganId').val(id);
-        }
+            // Tampilkan pelanggan jika ada
+            if (extra_info && extra_info.pelanggan) {
+                const { id, name } = extra_info.pelanggan;
+                $('#namaPelanggan').val(name);
+                $('#pelangganId').val(id);
+            }
+        });
     }
-    );
-}
 
-function addRow(item) {
-    const {
-        hash,
-        title,
-        quantity,
-        price,
-        total_price
-    } = item;
+    function addRow(item) {
+        const { hash, title, quantity, price, total_price, options } = item;
 
-    let btn = `<button type="button" class="btn btn-xs btn-success mr-2" onclick="ePut('${hash}',1)">
-    <i class="fas fa-plus"></i>
-    </button>`;
-    
-    btn += `<button type="button" class="btn btn-xs btn-primary mr-2" onclick="ePut('${hash}',-1)">
-    <i class="fas fa-minus"></i>
-    </button>`;
+        let btn = `<button type="button" class="btn btn-xs btn-success mr-2" onclick="ePut('${hash}',1)">
+                        <i class="fas fa-plus"></i>
+                   </button>`;
+        btn += `<button type="button" class="btn btn-xs btn-primary mr-2" onclick="ePut('${hash}',-1)">
+                        <i class="fas fa-minus"></i>
+                   </button>`;
+        btn += `<button type="button" class="btn btn-xs btn-danger" onclick="eDel('${hash}')">
+                        <i class="fas fa-times"></i>
+                   </button>`;
 
-    btn += `<button type="button" class="btn btn-xs btn-danger" onclick="eDel('${hash}')">
-    <i class="fas fa-times"></i>
-    </button>`;
+        const { diskon, harga_produk } = options;
+        const nilai_diskon = diskon ? `(-${diskon}%)` : "";
 
-    const row = `<tr>
-    <td>${title}</td>
-    <td>${quantity}</td>
-    <td>${rupiah(price)}</td>
-    <td>${rupiah(total_price)}</td>
-    <td>${ btn }</td>
-    </tr>`;
+        const row = `<tr>
+                        <td>${title}</td>
+                        <td>${quantity}</td>
+                        <td>${rupiah(harga_produk)}${nilai_diskon}</td>
+                        <td>${rupiah(total_price)}</td>
+                        <td>${btn}</td>
+                    </tr>`;
 
-    $('#resultCart').append(row);
+        $('#resultCart').append(row);
+    }
 
-}
+    function rupiah(number) {
+        return new Intl.NumberFormat("id-ID").format(number);
+    }
 
-function rupiah(number) {
-    return new Intl.NumberFormat("id-ID").format(number);
-}
+    function ePut(hash, qty) {
+        $.ajax({
+            type: "PUT",
+            url: "/cart/" + hash,
+            data: { qty: qty },
+            dataType: "json",
+            success: function() {
+                fetchCart();
+            }
+        });
+    }
 
-function ePut(hash, qty) {
-    $.ajax({
-        type: "PUT",
-        url: "/cart/" + hash,
-        data: {
-            qty: qty
-        },
-        dataType: "json",
-        success: function(response) {
-            fetchCart()
-        }
-    });
-}
-
-function eDel(hash) {
-    $.ajax({
-        type: "DELETE",
-        url: "/cart/" + hash,
-        dataType: "json",
-        success: function(response) {
-
-        }
-    });
-}
+    function eDel(hash) {
+        $.ajax({
+            type: "DELETE",
+            url: "/cart/" + hash,
+            dataType: "json",
+            success: function() {
+                fetchCart();
+            }
+        });
+    }
 </script>
 @endpush

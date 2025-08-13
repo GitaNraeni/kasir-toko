@@ -44,6 +44,9 @@
                         <th>Kode</th>
                         <th>Nama Produk</th>
                         <th>Kategori</th>
+                        <th>Harga Produk</th>
+                        <th>Diskon</th>
+                        <th>Harga Jual</th>
                         <th>Harga</th>
                         <th>Stok</th>
                         <th></th>
@@ -56,6 +59,9 @@
                         <td>{{ $produk->kode_produk }}</td>
                         <td>{{ $produk->nama_produk }}</td>
                         <td>{{ $produk->nama_kategori }}</td>
+                        <td>{{ $produk->harga_produk }}</td>
+                        <td>{{ $produk->diskon }}</td>
+                        <td>{{ $produk->harga }}</td>
                         <td>{{ $produk->harga }}</td>
                         <td>{{ $produk->stok }}</td>
                         <td class="text-right">
@@ -77,7 +83,7 @@
                     </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="text-center text-muted">Belum ada produk.</td>
+                            <td colspan="10" class="text-center text-muted">Belum ada produk.</td>
                         </tr>
                     @endforelse
                 </tbody>

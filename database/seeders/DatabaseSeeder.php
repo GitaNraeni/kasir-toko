@@ -50,14 +50,16 @@ class DatabaseSeeder extends Seeder
             'kategori_id'=>1,
             'kode_produk'=>'1001',
             'nama_produk'=>'Chiki Taro',
-            'harga'=>5000
+            'harga'=>5000,
+            'harga_produk'=>5000,
          ]);
 
          \App\Models\Produk::create([
             'kategori_id'=>2,
             'kode_produk'=>'1002',
             'nama_produk'=>'Lee Mineral',
-            'harga'=>3500
+            'harga'=>3500,
+            'harga_produk'=>5000,
          ]);
 
          \App\Models\Stok::create([
