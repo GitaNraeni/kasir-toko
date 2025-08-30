@@ -17,8 +17,8 @@
         <div class="form-group">
             <label for="namaPelanggan">Nama Pelanggan</label>
             <input type="text" id="namaPelanggan" 
-                   class="form-control @error('pelanggan_id') is-invalid @enderror" 
-                   disabled>
+                class="form-control @error('pelanggan_id') is-invalid @enderror" 
+                disabled>
             @error('pelanggan_id')
                 <div class="invalid-feedback">
                     {{ $message }}
@@ -73,8 +73,8 @@
                 <span class="input-group-text">Cash</span>
             </div>
             <input type="text" name="cash" 
-                   class="form-control @error('cash') is-invalid @enderror"
-                   placeholder="Jumlah Cash" value="{{ old('cash') }}">
+                class="form-control @error('cash') is-invalid @enderror"
+                placeholder="Jumlah Cash" value="{{ old('cash') }}">
         </div>
 
         <input type="hidden" name="total_bayar" id="totalBayar" />
@@ -139,20 +139,27 @@
 
         let btn = `<button type="button" class="btn btn-xs btn-success mr-2" onclick="ePut('${hash}',1)">
                         <i class="fas fa-plus"></i>
-                   </button>`;
+                    </button>`;
         btn += `<button type="button" class="btn btn-xs btn-primary mr-2" onclick="ePut('${hash}',-1)">
                         <i class="fas fa-minus"></i>
-                   </button>`;
+                    </button>`;
         btn += `<button type="button" class="btn btn-xs btn-danger" onclick="eDel('${hash}')">
                         <i class="fas fa-times"></i>
-                   </button>`;
+                    </button>`;
 
         const { diskon, harga_produk } = options;
         const nilai_diskon = diskon ? `(-${diskon}%)` : "";
 
         const row = `<tr>
                         <td>${title}</td>
-                        <td>${quantity}</td>
+                        <td>
+                            <input type="number"
+                                value="${quantity}"
+                                min="1"
+                                data-hash="${hash}"
+                                style="width:60px;text-align:center"
+                                onchange="updateQty('${hash}', this.value)">
+                        </td>
                         <td>${rupiah(harga_produk)}${nilai_diskon}</td>
                         <td>${rupiah(total_price)}</td>
                         <td>${btn}</td>
@@ -165,11 +172,31 @@
         return new Intl.NumberFormat("id-ID").format(number);
     }
 
-    function ePut(hash, qty) {
+    function updateQty(hash, qty) {
         $.ajax({
             type: "PUT",
             url: "/cart/" + hash,
-            data: { qty: qty },
+            data: { qty: parseInt(qty) },
+            dataType: 'json',
+            success: function(response) {
+                console.log(response);
+                fetchCart();
+            }
+     });
+    }
+
+    function ePut(hash, change) {
+        let input = $(`input[data-hash='${hash}']`);
+        let currentQty = parseInt(input.val()) || 0;
+        let  newQty = currentQty + change;
+
+        if (newQty < 1) {
+            newQty = 1;
+        }
+        $.ajax({
+            type: "PUT",
+            url: "/cart/" + hash,
+            data: { qty: newQty },
             dataType: "json",
             success: function() {
                 fetchCart();
@@ -182,7 +209,7 @@
             type: "DELETE",
             url: "/cart/" + hash,
             dataType: "json",
-            success: function() {
+            success: function(response) {
                 fetchCart();
             }
         });

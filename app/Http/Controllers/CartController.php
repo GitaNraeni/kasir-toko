@@ -49,7 +49,7 @@ class CartController extends Controller
     public function update(Request $request, $hash)
     {
         $request->validate([
-            'qty' => ['required', 'in:-1,1']
+            'qty' => ['required', 'integer', 'min:1']
         ]);
 
         $cart = Cart::name($request->user()->id);
@@ -60,7 +60,7 @@ class CartController extends Controller
         }
 
         $cart->updateItem($item->getHash(), [
-            'quantity' => $item->getQuantity() + $request->qty
+            'quantity' => (int) $request->qty
         ]);
 
         return response()->json(['message' => 'Berhasil diupdate.']);

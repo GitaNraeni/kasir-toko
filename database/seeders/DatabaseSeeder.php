@@ -59,7 +59,7 @@ class DatabaseSeeder extends Seeder
             'kode_produk'=>'1002',
             'nama_produk'=>'Lee Mineral',
             'harga'=>3500,
-            'harga_produk'=>5000,
+            'harga_produk'=>3500,
          ]);
 
          \App\Models\Stok::create([
@@ -139,5 +139,5 @@ class DatabaseSeeder extends Seeder
             'harga_produk' => 5000,
             'subtotal' => 10000,
          ]);
-    }
+   }
 }   

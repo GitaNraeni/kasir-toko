@@ -84,6 +84,19 @@ class TransaksiController extends Controller
                 'harga_produk' => $item->price,
                 'subtotal' => $item->subtotal,
             ]);
+
+            $produk = Produk::find($item->id);
+            if ($produk) {
+                if ($produk->stok < $item->quantity) {
+                    return redirect()
+                    ->back()
+                    ->with('error', "Stok {$produk->nama_produk} tidak mencukupi! Sisa stok: {$produk->stok}" )
+                    ->withImput();
+                }
+
+                $produk->stok -= $item->quantity;
+                $produk->save();
+            }
         }
 
         $cart->destroy();
