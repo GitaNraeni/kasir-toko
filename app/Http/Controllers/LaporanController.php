@@ -14,18 +14,31 @@ class LaporanController extends Controller
     }
 
     public function harian(Request $request)
-    {
-        $penjualan = Penjualan::join('users', 'users.id', 'penjualans.user_id')
-            ->join('pelanggans', 'pelanggans.id', 'penjualans.pelanggan_id')
-            ->whereDate('tanggal', $request->tanggal)
-            ->select('penjualans.*', 'pelanggans.name as nama_pelanggan', 'users.name as nama_kasir')
-            ->orderBy('id')
-            ->get();
+{
+    $penjualan = Penjualan::with(['detil.produk'])
+        ->join('users', 'users.id', 'penjualans.user_id')
+        ->join('pelanggans', 'pelanggans.id', 'penjualans.pelanggan_id')
+        ->whereDate('tanggal', $request->tanggal)
+        ->select('penjualans.*', 'pelanggans.name as nama_pelanggan', 'users.name as nama_kasir')
+        ->orderBy('id')
+        ->get();
 
-        return view('laporan.harian', [
-            'penjualan' => $penjualan
-        ]);
-    }
+    // Hitung total hanya untuk transaksi yang tidak batal
+    $total = $penjualan->where('status', '!=', 'batal')->sum('subtotal');
+
+    // Pajak (misal 10%)
+    $pajakPersen = 10;
+    $pajak = ($total * $pajakPersen) / 100;
+    $grandTotal = $total + $pajak;
+
+    return view('laporan.harian', [
+        'penjualan'   => $penjualan,
+        'total'       => $total,
+        'pajak'       => $pajak,
+        'grandTotal'  => $grandTotal,
+        'pajakPersen' => $pajakPersen
+    ]);
+}
 
     public function bulanan(Request $request)
     {

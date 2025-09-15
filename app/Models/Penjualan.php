@@ -23,4 +23,21 @@ class Penjualan extends Model
         'subtotal',
         'pajak'
     ];
+    // Relasi ke detail penjualan
+    public function detil()
+    {
+        return $this->hasMany(DetilPenjualan::class, 'penjualan_id');
+    }
+
+    // Relasi ke pelanggan
+    public function pelanggan()
+    {
+        return $this->belongsTo(Pelanggan::class, 'pelanggan_id');
+    }
+
+    // Relasi ke user/kasir
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

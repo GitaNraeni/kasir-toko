@@ -18,4 +18,16 @@ class DetilPenjualan extends Model
         'harga_produk',
         'subtotal',
     ];
+
+    // Relasi ke Penjualan
+    public function penjualan()
+    {
+        return $this->belongsTo(Penjualan::class, 'penjualan_id');
+    }
+
+    // Relasi ke Produk
+    public function produk()
+    {
+        return $this->belongsTo(Produk::class, 'produk_id');
+    }
 }
