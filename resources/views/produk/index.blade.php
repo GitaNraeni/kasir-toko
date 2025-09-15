@@ -19,6 +19,12 @@
         <strong>Berhasil dihapus!</strong> Produk berhasil dihapus.
     </x-alert>
     @endif
+    @if (session('error'))
+    <x-alert type="danger">
+        <strong>Gagal!</strong> {{ session('error') }}
+    </x-alert>
+    @endif
+
     <div class="card card-orange card-outline">
         <div class="card-header form-inline">
             <a href="{{ route('produk.create') }}" class="btn btn-primary">
@@ -59,10 +65,10 @@
                         <td>{{ $produk->kode_produk }}</td>
                         <td>{{ $produk->nama_produk }}</td>
                         <td>{{ $produk->nama_kategori }}</td>
-                        <td>{{ $produk->harga_produk }}</td>
-                        <td>{{ $produk->diskon }}</td>
-                        <td>{{ $produk->harga }}</td>
-                        <td>{{ $produk->harga }}</td>
+                        <td>{{ number_format($produk->harga_produk, 0, ',', '.') }}</td>
+                        <td>{{ $produk->diskon }}%</td>
+                        <td>{{ number_format($produk->harga_jual, 0, ',', '.') }}</td>
+                        <td>{{ number_format($produk->harga, 0, ',', '.') }}</td>
                         <td>{{ $produk->stok }}</td>
                         <td class="text-right">
                             <a href="{{ route('produk.edit', [

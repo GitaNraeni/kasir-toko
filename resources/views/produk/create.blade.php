@@ -22,12 +22,16 @@
                     <x-input name="nama_produk" type="text" />
                 </div>
                 <div class="form-group">
-                    <label>Harga Produk</label>
-                    <x-input name="harga" type="text" />
+                    <label>Harga Produk (Modal)</label>
+                    <x-input name="harga_produk" type="number" />
                 </div>
                 <div class="form-group">
-                    <label>Diskon</label>
-                    <x-input name="diskon" type="text" />
+                    <label>Harga Jual (Normal)</label>
+                    <x-input name="harga_jual" type="number" />
+                </div>
+                <div class="form-group">
+                    <label>Diskon (%)</label>
+                    <x-input name="diskon" type="number" value="0" />
                 </div>
                 <div class="form-group">
                     <label>Kategori</label>

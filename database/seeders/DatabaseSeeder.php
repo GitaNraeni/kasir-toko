@@ -57,7 +57,7 @@ class DatabaseSeeder extends Seeder
          \App\Models\Produk::create([
             'kategori_id'=>2,
             'kode_produk'=>'1002',
-            'nama_produk'=>'Lee Mineral',
+            'nama_produk'=>'Le Mineral',
             'harga'=>3500,
             'harga_produk'=>3500,
          ]);

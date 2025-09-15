@@ -147,8 +147,9 @@
                         <i class="fas fa-times"></i>
                     </button>`;
 
-        const { diskon, harga_produk } = options;
+        const { diskon, harga_jual, harga_produk } = options;
         const nilai_diskon = diskon ? `(-${diskon}%)` : "";
+        const hargaTampil = harga_jual ?? harga_produk ?? price;
 
         const row = `<tr>
                         <td>${title}</td>

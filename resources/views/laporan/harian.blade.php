@@ -18,6 +18,10 @@
         </tr>
     </thead>
     <tbody>
+        @php
+            $total = 0;
+        @endphp
+
         @foreach ($penjualan as $key => $row)
         <tr>
             <td>{{ $key + 1 }}</td>
@@ -26,7 +30,16 @@
             <td>{{ $row->nama_kasir }}</td>
             <td>{{ ucwords($row->status) }}</td>
             <td>{{ date('H:i:s', strtotime($row->tanggal)) }}</td>
-            <td>{{ number_format($row->total, 0, ',', '.') }}</td>
+            <td>
+                @if (trim(strtolower($row->status)) == 'batal')
+                    ({{ number_format($row->total, 0, ',', '.') }})
+                @else
+                    {{ number_format($row->total, 0, ',', '.') }}
+                    @php
+                        $total += $row->total;
+                    @endphp
+                @endif
+            </td>
         </tr>
         @endforeach
     </tbody>
@@ -36,7 +49,7 @@
                 Jumlah Total
             </th>
             <th>
-                {{ number_format( $penjualan->sum('total') , 0, ',', '.') }}
+                {{ number_format($total, 0, ',', '.') }}
             </th>
         </tr>
     </tfoot>

@@ -26,7 +26,7 @@ Route::middleware('auth')->group(function(){
     Route::singleton('profile',ProfileController::class);
     Route::resource('user', UserControler::class)->middleware('can:admin');
     Route::resource('pelanggan', PelangganController::class);
-    Route::resource('kategori', KategoriController::class)->middleware('can:admin');
+    Route::resource('kategori', KategoriController::class);
     Route::resource('produk', ProdukController::class);
     Route::get('stok/produk',[StokController::class,'produk'])->name('stok.produk');
     Route::resource('stok',StokController::class)->only('index','create','store','destroy');

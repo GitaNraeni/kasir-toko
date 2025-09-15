@@ -12,7 +12,7 @@
     
     <div class="login-box">
         <div class="login-logo">
-            <a href="/"><b>Madu</b>Jaya</a>
+            <a href="/"><b>Toko</b>Gita</a>
         </div>
 
         <div class="card">

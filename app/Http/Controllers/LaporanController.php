@@ -30,9 +30,12 @@ class LaporanController extends Controller
     public function bulanan(Request $request)
     {
         $penjualan = Penjualan::select(
-            DB::raw('COUNT(id) as jumlah_transaksi'),
-            DB::raw('SUM(total) as jumlah_total'),
-            DB::raw("DATE_FORMAT(tanggal, '%d/%m/%Y') tgl")
+            DB::raw("DATE_FORMAT(tanggal, '%d/%m/%Y') as tgl"),
+            DB::raw("SUM(CASE WHEN status = 'selesai' THEN 1 ELSE 0 END) as sukses"),
+            DB::raw("SUM(CASE WHEN status = 'batal' THEN 1 ELSE 0 END) as dibatalkan"),
+            DB::raw("COUNT(id) as jumlah_transaksi"),
+            DB::raw("SUM(CASE WHEN status = 'batal' THEN total ELSE 0 END) as total_dibatalkan"),
+            DB::raw("SUM(total) as jumlah_total")
         )
             ->whereMonth('tanggal', $request->bulan)
             ->whereYear('tanggal', $request->tahun)
@@ -48,7 +51,8 @@ class LaporanController extends Controller
 
         return view('laporan.bulanan', [
             'penjualan' => $penjualan,
-            'bulan' => $bulan
+            'bulan' => $bulan,
+            'tahun' => $request->tahun
         ]);
     }
 }

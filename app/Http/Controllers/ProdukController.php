@@ -11,23 +11,26 @@ class ProdukController extends Controller
 
     public function index(Request $request)
     {
-        $search = $request->search;
+    $search = $request->search;
 
-        $produks = Produk::join('kategoris', 'kategoris.id', 'produks.kategori_id')
+    $produks = Produk::join('kategoris', 'kategoris.id', 'produks.kategori_id')
         ->orderBy('produks.id')
         ->select('produks.*', 'nama_kategori')
         ->when($search, function ($q, $search) {
-            return $q->where('kode_produk', 'like', "%{$search}%")
-            ->orWhere('nama_produk', 'like', "%{$search}%");
+            return $q->where(function ($query) use ($search) {
+                $query->where('produks.nama_produk', 'like', "%{$search}%")
+                    ->orWhere('produks.kode_produk', 'like', "%{$search}%")
+                    ->orWhere('kategoris.nama_kategori', 'like', "%{$search}%");
+            });
         })
-        ->paginate();
+        ->paginate(10);
 
-        if ($search) $produks->appends(['search' => $search]);
+    if ($search) $produks->appends(['search' => $search]);
 
-        return view('produk.index', [
-            'produks' => $produks
-        ]);
-    }
+    return view('produk.index', [
+        'produks' => $produks
+    ]);
+}
 
     public function create()
     {
@@ -47,26 +50,33 @@ class ProdukController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'kode_produk' => ['required', 'max:250', 'unique:produks'],
-            'nama_produk' => ['required', 'max:150'],
-            'harga' => ['required', 'numeric'],
-            'kategori_id' => ['required', 'exists:kategoris,id'],
-            'diskon'=>['required','between:0,100'],
-        ]);
+{
+    $request->validate([
+        'kode_produk' => ['required', 'max:250', 'unique:produks'],
+        'nama_produk' => ['required', 'max:150'],
+        'harga_produk' => ['required', 'numeric'], // harga modal
+        'harga_jual' => ['required', 'numeric'],   // harga normal
+        'diskon' => ['required', 'between:0,100'],
+        'kategori_id' => ['required', 'exists:kategoris,id'],
+    ]);
 
-        $harga = $request->harga - ($request->harga * $request->diskon / 100);
+    // hitung harga setelah diskon
+    $harga = $request->harga_jual - ($request->harga_jual * $request->diskon / 100);
 
-        $request->merge([
-            'harga_produk'=>$request->harga,
-            'harga'=>$harga,
-        ]);
+    // simpan data produk
+    $produk = Produk::create([
+        'kode_produk' => $request->kode_produk,
+        'nama_produk' => $request->nama_produk,
+        'harga_produk' => $request->harga_produk,
+        'harga_jual' => $request->harga_jual,
+        'diskon' => $request->diskon,
+        'kategori_id' => $request->kategori_id,
+        'stok' => $request->stok ?? 0,
+        'harga' => $harga, // 👈 WAJIB ditambah
+    ]);
 
-        Produk::create($request->all());
-
-        return redirect()->route('produk.index')->with('store', 'success');
-    }
+    return redirect()->route('produk.index')->with('store', 'success');
+}
 
     public function show(Produk $produk)
     {
@@ -92,31 +102,39 @@ class ProdukController extends Controller
     }
 
     public function update(Request $request, Produk $produk)
-    {
-        $request->validate([
-            'kode_produk' => ['required', 'max:250', 'unique:produks,kode_produk,' .$produk->id],
-            'nama_produk' => ['required', 'max:150'],
-            'harga' => ['required', 'numeric'],
-            'diskon'=>['required','between:0,100'],
-            'kategori_id' => ['required', 'exists:kategoris,id'],
-        ]);
+{
+    $request->validate([
+        'kode_produk' => ['required', 'max:250', 'unique:produks,kode_produk,' .$produk->id],
+        'nama_produk' => ['required', 'max:150'],
+        'harga_produk' => ['required', 'numeric'],
+        'harga_jual' => ['required', 'numeric'],
+        'diskon'=>['required','between:0,100'],
+        'kategori_id' => ['required', 'exists:kategoris,id'],
+    ]);
 
-        $harga = $request->harga - ($request->harga * $request->diskon / 100);
+    $harga = $request->harga_jual - ($request->harga_jual * $request->diskon / 100);
 
-        $request->merge([
-            'harga_produk'=>$request->harga,
-            'harga'=>$harga,
-        ]);
+    $produk->update([
+        'kode_produk' => $request->kode_produk,
+        'nama_produk' => $request->nama_produk,
+        'kategori_id' => $request->kategori_id,
+        'harga_produk'=> $request->harga_produk,
+        'harga_jual'  => $request->harga_jual,
+        'diskon'      => $request->diskon,
+        'harga'       => $harga,
+        // stok tidak ikut diupdate
+    ]);
 
-        $produk->update($request->all());
-
-        return redirect()->route('produk.index')->with('update', 'success');
-    }
+    return redirect()->route('produk.index')->with('update', 'success');
+}
 
     public function destroy(Produk $produk)
     {
-        $produk->delete();
+        if ($produk->detilPenjualans()->count() > 0) {
+            return back()->with('error', '❌ Produk tidak bisa dihapus karena sudah pernah dipakai di transaksi!');
+        }
 
+        $produk->delete();
         return back()->with('destroy', 'success');
     }
 }

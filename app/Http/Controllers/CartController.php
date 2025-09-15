@@ -39,7 +39,7 @@ class CartController extends Controller
             'price' => $produk->harga,
             'options' => [
                 'diskon' => $produk->diskon,
-                'harga_produk' => $produk->harga_produk,
+                'harga_produk' => $produk->harga_jual,
             ]
         ]);
 

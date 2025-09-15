@@ -11,13 +11,20 @@ class Produk extends Model
 
     public $timestamps = false;
 
-    protected $fillable =[
-        'kategori_id',
-        'kode_produk',
-        'nama_produk',
-        'harga',
-        'stok',
-        'harga_produk',
-        'diskon'
-    ];
+    protected $fillable = [
+    'kategori_id',
+    'kode_produk',
+    'nama_produk',
+    'stok',
+    'harga_produk',
+    'harga_jual',
+    'harga',
+    'diskon',
+];
+
+public function detilPenjualans()
+{
+    return $this->hasMany(DetilPenjualan::class);
+}
+
 }
