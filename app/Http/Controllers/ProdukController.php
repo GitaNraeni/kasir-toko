@@ -63,6 +63,12 @@ class ProdukController extends Controller
     // hitung harga setelah diskon
     $harga = $request->harga_jual - ($request->harga_jual * $request->diskon / 100);
 
+    if ($harga < $request->harga_produk) {
+        return back()
+            ->withErrors(['diskon' => '❌ Diskon terlalu besar! Harga setelah diskon lebih kecil dari modal.'])
+            ->withInput();
+    }
+
     // simpan data produk
     $produk = Produk::create([
         'kode_produk' => $request->kode_produk,
@@ -113,6 +119,12 @@ class ProdukController extends Controller
     ]);
 
     $harga = $request->harga_jual - ($request->harga_jual * $request->diskon / 100);
+
+    if ($harga < $request->harga_produk) {
+        return back()
+            ->withErrors(['diskon' => '❌ Diskon terlalu besar! Harga setelah diskon lebih kecil dari modal.'])
+            ->withInput();
+    }
 
     $produk->update([
         'kode_produk' => $request->kode_produk,
